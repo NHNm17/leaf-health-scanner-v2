@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaf Health Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:#1D9E75; --green-dark:#0F6E56; --green-light:#E1F5EE;
+      --amber:#EF9F27; --amber-light:#FFF4E0; --amber-dark:#854F0B;
+      --coral:#D85A30; --coral-light:#FFF0EE; --coral-dark:#993C1D;
+      --blue-light:#EFF7FF;
+      --bg:#F4F7F5; --surface:#FFFFFF; --surface2:#F0F4F2;
+      --border:rgba(0,0,0,0.08); --border-md:rgba(0,0,0,0.14);
+      --text:#111; --text2:#4A4A4A; --text3:#888;
+      --r-sm:8px; --r-md:12px; --r-lg:18px;
+    }
+    body {
+      font-family:'Inter',system-ui,sans-serif;
+      background:var(--bg); color:var(--text);
+      min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      padding:1.5rem 1rem 4rem;
+    }
+
+    /* ── Top bar ── */
+    .topbar { width:100%; max-width:580px; display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+    .topbar-left { display:flex; align-items:center; gap:12px; }
+    .logo-box { width:44px; height:44px; border-radius:12px; background:var(--green); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .logo-box svg { width:24px; height:24px; fill:white; }
+    .topbar-text h1 { font-size:19px; font-weight:700; letter-spacing:-0.4px; }
+    .topbar-text p  { font-size:12px; color:var(--text3); margin-top:2px; }
+
+    /* ── Language switcher ── */
+    .lang-switcher { display:flex; gap:4px; background:var(--surface2); border-radius:var(--r-sm); padding:3px; }
+    .lang-btn {
+      padding:5px 10px; border:none; border-radius:6px; font-size:12px; font-weight:600;
+      cursor:pointer; background:transparent; color:var(--text3); transition:all 0.15s;
+    }
+    .lang-btn.active { background:white; color:var(--green); box-shadow:0 1px 3px rgba(0,0,0,0.12); }
+
+    /* ── Card ── */
+    .card { width:100%; max-width:580px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
+
+    /* ── Input tabs ── */
+    .input-tabs { display:flex; border-bottom:1px solid var(--border); }
+    .tab-btn {
+      flex:1; padding:14px; border:none; background:transparent;
+      font-size:14px; font-weight:600; cursor:pointer; color:var(--text3);
+      display:flex; align-items:center; justify-content:center; gap:7px;
+      border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s;
+    }
+    .tab-btn.active { color:var(--green); border-bottom-color:var(--green); }
+    .tab-btn svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2; }
+
+    /* ── Upload zone ── */
+    #uploadZone {
+      position:relative; margin:1.25rem; padding:2.5rem 1.5rem;
+      border:2px dashed var(--border-md); border-radius:var(--r-md);
+      text-align:center; cursor:pointer; background:var(--surface2);
+      transition:border-color 0.2s, background 0.2s;
+    }
+    #uploadZone:hover, #uploadZone.drag { border-color:var(--green); background:var(--green-light); }
+    #uploadZone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+    .up-icon { width:58px; height:58px; border-radius:16px; background:var(--green-light); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
+    .up-icon svg { width:28px; height:28px; stroke:var(--green); fill:none; stroke-width:1.7; }
+    #uploadZone h2 { font-size:16px; font-weight:600; margin-bottom:5px; }
+    #uploadZone p  { font-size:14px; color:var(--text3); }
+    #uploadZone small { font-size:12px; color:var(--text3); margin-top:5px; display:block; }
+
+    /* ── Camera section ── */
+    #cameraSection { display:none; margin:1.25rem; }
+    #videoEl { width:100%; border-radius:var(--r-md); display:block; background:#000; max-height:300px; object-fit:cover; }
+    .cam-controls { display:flex; gap:8px; margin-top:10px; }
+    .cam-btn {
+      flex:1; padding:11px; border:none; border-radius:var(--r-sm);
+      font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:background 0.15s;
+    }
+    .cam-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
+    .cam-btn-capture { background:var(--green); color:white; }
+    .cam-btn-capture:hover { background:var(--green-dark); }
+    .cam-btn-flip { background:var(--surface2); color:var(--text2); border:1px solid var(--border-md); }
+    .cam-btn-flip:hover { background:#e0e7e4; }
+    #camError { display:none; font-size:13px; color:var(--coral-dark); background:var(--coral-light); border:1px solid #F5C4B3; border-radius:var(--r-sm); padding:10px 12px; margin-top:10px; }
+    #canvasEl { display:none; }
+
+    /* ── Preview ── */
+    #previewSection { display:none; padding:1.25rem 1.25rem 0; }
+    .img-wrap { position:relative; border-radius:var(--r-md); overflow:hidden; }
+    .img-wrap img { width:100%; max-height:300px; object-fit:cover; display:block; }
+    .change-btn {
+      position:absolute; top:10px; right:10px;
+      background:rgba(255,255,255,0.9); backdrop-filter:blur(4px);
+      border:1px solid var(--border-md); border-radius:var(--r-sm);
+      padding:6px 12px; font-size:13px; font-weight:500; cursor:pointer; color:var(--text2);
+      display:flex; align-items:center; gap:6px;
+    }
+    .change-btn svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; }
+
+    /* ── Scan button ── */
+    #scanBtn {
+      display:none; width:calc(100% - 2.5rem); margin:1rem 1.25rem 1.25rem;
+      padding:14px; background:var(--green); color:white; border:none;
+      border-radius:var(--r-md); font-size:16px; font-weight:600; cursor:pointer;
+      align-items:center; justify-content:center; gap:8px; transition:background 0.2s;
+    }
+    #scanBtn:hover { background:var(--green-dark); }
+    #scanBtn:disabled { background:#bbb; cursor:not-allowed; }
+    #scanBtn svg { width:20px; height:20px; stroke:white; fill:none; stroke-width:2; }
+
+    /* ── Loading ── */
+    #loadingSection { display:none; padding:3rem 1.5rem; text-align:center; }
+    .ring { width:50px; height:50px; border:3px solid var(--green-light); border-top-color:var(--green); border-radius:50%; animation:spin .75s linear infinite; margin:0 auto 16px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #loadingSection p { font-size:15px; color:var(--text2); }
+    #loadingSection small { font-size:13px; color:var(--text3); margin-top:5px; display:block; }
+
+    /* ── Error ── */
+    #errorBox {
+      display:none; margin:1.25rem;
+      background:var(--coral-light); border:1px solid #F5C4B3;
+      border-radius:var(--r-md); padding:14px 16px; gap:10px; align-items:flex-start;
+    }
+    #errorBox svg { width:20px; height:20px; stroke:var(--coral-dark); fill:none; stroke-width:2; flex-shrink:0; margin-top:1px; }
+    #errorBox div { font-size:14px; color:var(--coral-dark); line-height:1.55; }
+    #errorBox strong { display:block; font-weight:600; margin-bottom:3px; }
+
+    /* ── Results ── */
+    #resultsSection { display:none; }
+    .health-hero { padding:1.5rem 1.25rem 1.25rem; border-bottom:1px solid var(--border); }
+    .hh-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+    .plant-name { font-size:18px; font-weight:700; letter-spacing:-0.3px; }
+    .plant-sci  { font-size:13px; color:var(--text3); font-style:italic; margin-top:3px; }
+    .score-wrap { text-align:right; }
+    .score-num  { font-size:38px; font-weight:700; line-height:1; letter-spacing:-2px; }
+    .score-lbl  { font-size:12px; color:var(--text3); margin-top:2px; }
+    .bar-bg   { height:8px; background:var(--surface2); border-radius:999px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:999px; transition:width 1.3s cubic-bezier(.34,1.2,.64,1); width:0; }
+    .badge-row { margin-top:10px; }
+    .badge { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; padding:4px 11px; border-radius:999px; }
+    .dot { width:6px; height:6px; border-radius:50%; }
+    .b-green { background:var(--green-light); color:#0B5C43; }
+    .b-green .dot { background:var(--green); }
+    .b-amber { background:var(--amber-light); color:var(--amber-dark); }
+    .b-amber .dot { background:var(--amber); }
+    .b-coral { background:var(--coral-light); color:var(--coral-dark); }
+    .b-coral .dot { background:var(--coral); }
+    .rs { padding:1.25rem; border-bottom:1px solid var(--border); }
+    .rs:last-of-type { border-bottom:none; }
+    .rs-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text3); display:flex; align-items:center; gap:7px; margin-bottom:12px; }
+    .rs-title svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; }
+    .diag-text { font-size:15px; color:var(--text2); line-height:1.72; }
+    .issue-item, .nut-item { padding:10px 0; border-bottom:1px solid var(--border); }
+    .issue-item:last-child, .nut-item:last-child { border-bottom:none; padding-bottom:0; }
+    .issue-item:first-child, .nut-item:first-child { padding-top:0; }
+    .ihead { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+    .iname { font-size:14px; font-weight:600; }
+    .idesc { font-size:13px; color:var(--text2); line-height:1.55; }
+    .water-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .wc { background:var(--surface2); border-radius:var(--r-sm); padding:12px 14px; }
+    .wc-lbl { font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:var(--text3); margin-bottom:5px; }
+    .wc-val { font-size:14px; font-weight:600; color:var(--text); }
+    .wnote { grid-column:span 2; background:var(--blue-light); border:1px solid #C2DEFF; border-radius:var(--r-sm); padding:10px 13px; font-size:13px; color:#1A4E8C; line-height:1.6; }
+    .tip-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .tip-li { display:flex; align-items:flex-start; gap:10px; background:var(--surface2); border-radius:var(--r-sm); padding:10px 13px; font-size:14px; color:var(--text2); line-height:1.6; }
+    .tip-n { width:22px; height:22px; border-radius:50%; background:var(--green-light); color:#0B5C43; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+
+    /* ── Rescan ── */
+    #rescanBtn {
+      display:none; width:calc(100% - 2.5rem); margin:0 1.25rem 1.25rem;
+      padding:12px; background:var(--surface2); color:var(--text);
+      border:1px solid var(--border-md); border-radius:var(--r-md);
+      font-size:14px; font-weight:600; cursor:pointer;
+      align-items:center; justify-content:center; gap:7px; transition:all 0.15s;
+    }
+    #rescanBtn:hover { background:var(--green-light); border-color:var(--green); color:var(--green-dark); }
+    #rescanBtn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; }
+
+    /* ── Footer ── */
+    .footer { width:100%; max-width:580px; text-align:center; margin-top:1.75rem; font-size:12px; color:var(--text3); line-height:1.7; }
+    .footer a { color:var(--green); }
+
+    @media (max-width:440px) {
+      .water-grid { grid-template-columns:1fr; }
+      .wnote { grid-column:span 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.31 3.38 20 3.82 21 4.62 21c.41 0 .78-.22 1-.58C7.43 17.62 11 14.5 17 14.5c0 2 2 6.5 2 6.5s2-5 2-9c0-2.5-2-4-4-4z"/></svg>
+    </div>
+    <div class="topbar-text">
+      <h1 id="appTitle">Leaf Health Scanner</h1>
+      <p id="appSubtitle">AI-powered plant diagnosis</p>
+    </div>
+  </div>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('si')">සිං</button>
+    <button class="lang-btn" onclick="setLang('ta')">தமி</button>
+  </div>
+</div>
+
+<!-- Main card -->
+<div class="card">
+
+  <!-- Tabs -->
+  <div class="input-tabs">
+    <button class="tab-btn active" id="tabUpload" onclick="switchTab('upload')">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span id="lblUpload">Upload Photo</span>
+    </button>
+    <button class="tab-btn" id="tabCamera" onclick="switchTab('camera')">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span id="lblCamera">Use Camera</span>
+    </button>
+  </div>
+
+  <!-- Upload zone -->
+  <div id="uploadZone">
+    <input type="file" id="fileInput" accept="image/*" />
+    <div class="up-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+    <h2 id="uploadTitle">Upload a plant or leaf photo</h2>
+    <p id="uploadSub">Click to browse, or drag &amp; drop</p>
+    <small>JPG · PNG · WEBP supported</small>
+  </div>
+
+  <!-- Camera section -->
+  <div id="cameraSection">
+    <video id="videoEl" autoplay playsinline muted></video>
+    <canvas id="canvasEl"></canvas>
+    <div class="cam-controls">
+      <button class="cam-btn cam-btn-capture" onclick="capturePhoto()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="white" stroke="none"/></svg>
+        <span id="lblCapture">Capture</span>
+      </button>
+      <button class="cam-btn cam-btn-flip" onclick="flipCamera()">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        <span id="lblFlip">Flip</span>
+      </button>
+    </div>
+    <div id="camError"></div>
+  </div>
+
+  <!-- Preview -->
+  <div id="previewSection">
+    <div class="img-wrap">
+      <img id="previewImg" src="" alt="Plant preview" />
+      <button class="change-btn" onclick="resetApp()">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        <span id="lblChange">Change</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="errorBox">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div id="errorMsg"><strong>Scan failed</strong></div>
+  </div>
+
+  <!-- Scan button -->
+  <button id="scanBtn" onclick="runScan()">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span id="lblScan">Scan Plant</span>
+  </button>
+
+  <!-- Loading -->
+  <div id="loadingSection">
+    <div class="ring"></div>
+    <p id="loadingMsg">Analysing your plant...</p>
+    <small id="loadingSub">This usually takes 5–10 seconds</small>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsSection"></div>
+
+  <!-- Rescan -->
+  <button id="rescanBtn" onclick="resetApp()">
+    <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+    <span id="lblRescan">Scan another plant</span>
+  </button>
+
+</div>
+
+<p class="footer">
+  Powered by <a href="https://openrouter.ai" target="_blank">OpenRouter AI</a>
+  &nbsp;·&nbsp; <span id="footerNote">Results are for informational purposes only.</span>
+</p>
+
+<script>
+
+  // ── Language strings ──────────────────────────
+  const LANGS = {
+    en: {
+      appTitle:'Leaf Health Scanner', appSubtitle:'AI-powered plant diagnosis',
+      lblUpload:'Upload Photo', lblCamera:'Use Camera',
+      uploadTitle:'Upload a plant or leaf photo', uploadSub:'Click to browse, or drag & drop',
+      lblCapture:'Capture', lblFlip:'Flip',
+      lblChange:'Change', lblScan:'Scan Plant',
+      loadingMsg:'Analysing your plant...', loadingSub:'This usually takes 5–10 seconds',
+      lblRescan:'Scan another plant', footerNote:'Results are for informational purposes only.',
+      scanFailed:'Scan failed', healthScore:'health score',
+      lblDiagnosis:'Diagnosis', lblIssues:'Issues detected', lblNutrients:'Nutrient status',
+      lblWatering:'Watering schedule', lblTips:'Care tips',
+      lblFreq:'Frequency', lblAmount:'Amount', lblBestTime:'Best time',
+      noIssues:'No significant issues detected.',
+      camError:'Camera not available. Please allow camera access or use Upload instead.',
+      promptLang:'English'
+    },
+    si: {
+      appTitle:'කොළ සෞඛ්‍ය සොයනය', appSubtitle:'AI මගින් ශාක රෝග විනිශ්චය',
+      lblUpload:'ඡායාරූප උඩුගත කරන්න', lblCamera:'කැමරාව භාවිතා කරන්න',
+      uploadTitle:'ශාකයක් හෝ කොළයක ඡායාරූපයක් උඩුගත කරන්න', uploadSub:'ක්ලික් කරන්න හෝ ඇදගෙන දමන්න',
+      lblCapture:'ඡායාරූපය ගන්න', lblFlip:'කැමරාව හරවන්න',
+      lblChange:'වෙනස් කරන්න', lblScan:'ශාකය පරීක්ෂා කරන්න',
+      loadingMsg:'ශාකය විශ්ලේෂණය කරමින්...', loadingSub:'මෙය තත්පර 5-10ක් ගත විය හැකිය',
+      lblRescan:'තවත් ශාකයක් පරීක්ෂා කරන්න', footerNote:'ප්‍රතිඵල තොරතුරු සඳහා පමණි.',
+      scanFailed:'පරීක්ෂාව අසාර්ථක විය', healthScore:'සෞඛ්‍ය ලකුණු',
+      lblDiagnosis:'රෝග විනිශ්චය', lblIssues:'හඳුනාගත් ගැටලු', lblNutrients:'පෝෂක තත්ත්වය',
+      lblWatering:'ජලය දීමේ කාලසටහන', lblTips:'රැකවරණ උපදෙස්',
+      lblFreq:'සංඛ්‍යාතය', lblAmount:'ප්‍රමාණය', lblBestTime:'හොඳම වේලාව',
+      noIssues:'සැලකිය යුතු ගැටලු හඳුනාගෙන නොමැත.',
+      camError:'කැමරාව ලබාගත නොහැකිය. කැමරා ප්‍රවේශය ලබාදෙන්න.',
+      promptLang:'Sinhala'
+    },
+    ta: {
+      appTitle:'இலை ஆரோக்கிய ஸ்கேனர்', appSubtitle:'AI மூலம் தாவர நோய் கண்டறிதல்',
+      lblUpload:'புகைப்படம் பதிவேற்று', lblCamera:'கேமரா பயன்படுத்து',
+      uploadTitle:'தாவரம் அல்லது இலையின் புகைப்படம் பதிவேற்றவும்', uploadSub:'கிளிக் செய்யவும் அல்லது இழுத்து விடவும்',
+      lblCapture:'புகைப்படம் எடு', lblFlip:'கேமரா திருப்பு',
+      lblChange:'மாற்று', lblScan:'தாவரத்தை ஸ்கேன் செய்',
+      loadingMsg:'உங்கள் தாவரத்தை பகுப்பாய்வு செய்கிறோம்...', loadingSub:'இது 5-10 வினாடிகள் ஆகலாம்',
+      lblRescan:'மற்றொரு தாவரத்தை ஸ்கேன் செய்', footerNote:'முடிவுகள் தகவல் நோக்கத்திற்காக மட்டுமே.',
+      scanFailed:'ஸ்கேன் தோல்வியடைந்தது', healthScore:'ஆரோக்கிய மதிப்பெண்',
+      lblDiagnosis:'நோய் கண்டறிதல்', lblIssues:'கண்டறியப்பட்ட பிரச்சினைகள்', lblNutrients:'ஊட்டச்சத்து நிலை',
+      lblWatering:'நீர்ப்பாசன அட்டவணை', lblTips:'பராமரிப்பு குறிப்புகள்',
+      lblFreq:'அதிர்வெண்', lblAmount:'அளவு', lblBestTime:'சிறந்த நேரம்',
+      noIssues:'குறிப்பிடத்தக்க பிரச்சினைகள் எதுவும் இல்லை.',
+      camError:'கேமரா கிடைக்கவில்லை. கேமரா அணுகலை அனுமதிக்கவும்.',
+      promptLang:'Tamil'
+    }
+  };
+
+  let lang = 'en';
+  let T = LANGS.en;
+
+  function setLang(l) {
+    lang = l; T = LANGS[l];
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.onclick.toString().includes(`'${l}'`)));
+    applyLang();
+  }
+
+  function applyLang() {
+    const ids = ['appTitle','appSubtitle','lblUpload','lblCamera','uploadTitle','uploadSub',
+                 'lblCapture','lblFlip','lblChange','lblScan','loadingMsg','loadingSub',
+                 'lblRescan','footerNote'];
+    ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = T[id]; });
+  }
+
+  // ── State ─────────────────────────────────────
+  let imageBase64 = null, imageMimeType = null, loadTimer = null;
+  let stream = null, facingMode = 'environment';
+  let currentTab = 'upload';
+
+  // ── DOM refs ──────────────────────────────────
+  const uploadZone     = document.getElementById('uploadZone');
+  const fileInput      = document.getElementById('fileInput');
+  const cameraSection  = document.getElementById('cameraSection');
+  const videoEl        = document.getElementById('videoEl');
+  const canvasEl       = document.getElementById('canvasEl');
+  const camError       = document.getElementById('camError');
+  const previewSection = document.getElementById('previewSection');
+  const previewImg     = document.getElementById('previewImg');
+  const scanBtn        = document.getElementById('scanBtn');
+  const loadingSection = document.getElementById('loadingSection');
+  const loadingMsg     = document.getElementById('loadingMsg');
+  const loadingSub     = document.getElementById('loadingSub');
+  const resultsSection = document.getElementById('resultsSection');
+  const rescanBtn      = document.getElementById('rescanBtn');
+  const errorBox       = document.getElementById('errorBox');
+  const errorMsg       = document.getElementById('errorMsg');
+
+  // ── Tabs ──────────────────────────────────────
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tabUpload').classList.toggle('active', tab==='upload');
+    document.getElementById('tabCamera').classList.toggle('active', tab==='camera');
+    uploadZone.style.display    = tab==='upload' ? 'block' : 'none';
+    cameraSection.style.display = tab==='camera' ? 'block' : 'none';
+    if (tab==='camera') startCamera();
+    else stopCamera();
+  }
+
+  // ── Camera ────────────────────────────────────
+  async function startCamera() {
+    camError.style.display = 'none';
+    try {
+      if (stream) stopCamera();
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode, width:{ideal:1280}, height:{ideal:720} }, audio: false
+      });
+      videoEl.srcObject = stream;
+    } catch(e) {
+      camError.textContent = T.camError;
+      camError.style.display = 'block';
+    }
+  }
+
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach(t=>t.stop()); stream = null; }
+    videoEl.srcObject = null;
+  }
+
+  function flipCamera() {
+    facingMode = facingMode==='environment' ? 'user' : 'environment';
+    startCamera();
+  }
+
+  function capturePhoto() {
+    if (!stream) return;
+    canvasEl.width  = videoEl.videoWidth  || 640;
+    canvasEl.height = videoEl.videoHeight || 480;
+    canvasEl.getContext('2d').drawImage(videoEl, 0, 0);
+    canvasEl.toBlob(blob => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        imageBase64   = ev.target.result.split(',')[1];
+        imageMimeType = 'image/jpeg';
+        previewImg.src = ev.target.result;
+        stopCamera();
+        cameraSection.style.display = 'none';
+        previewSection.style.display = 'block';
+        scanBtn.style.display = 'flex';
+        errorBox.style.display = 'none';
+        resultsSection.style.display = 'none';
+        rescanBtn.style.display = 'none';
+      };
+      reader.readAsDataURL(blob);
+    }, 'image/jpeg', 0.92);
+  }
+
+  // ── File upload ───────────────────────────────
+  fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault(); uploadZone.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')) handleFile(f);
+  });
+
+  function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      imageBase64   = ev.target.result.split(',')[1];
+      imageMimeType = file.type;
+      previewImg.src = ev.target.result;
+      uploadZone.style.display    = 'none';
+      previewSection.style.display = 'block';
+      scanBtn.style.display        = 'flex';
+      errorBox.style.display       = 'none';
+      resultsSection.style.display = 'none';
+      rescanBtn.style.display      = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetApp() {
+    stopCamera();
+    uploadZone.style.display     = currentTab==='upload' ? 'block' : 'none';
+    cameraSection.style.display  = currentTab==='camera' ? 'block' : 'none';
+    previewSection.style.display = 'none';
+    scanBtn.style.display        = 'none';
+    loadingSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    rescanBtn.style.display      = 'none';
+    errorBox.style.display       = 'none';
+    imageBase64 = null; imageMimeType = null;
+    fileInput.value = '';
+    if(currentTab==='camera') startCamera();
+  }
+
+  // ── Scan ──────────────────────────────────────
+  async function runScan() {
+    if (!imageBase64) return;
+    scanBtn.disabled = true;
+    errorBox.style.display       = 'none';
+    resultsSection.style.display = 'none';
+    rescanBtn.style.display      = 'none';
+    loadingSection.style.display = 'block';
+
+    const msgs = [T.loadingMsg, 'Identifying species...', 'Checking for issues...', 'Generating care plan...'];
+    let mi = 0;
+    loadingMsg.textContent = msgs[0];
+    loadTimer = setInterval(() => { mi=(mi+1)%msgs.length; loadingMsg.textContent=msgs[mi]; }, 2000);
+
+    const prompt = `You are a professional botanist. Analyse the plant/leaf image carefully.
+Respond ONLY in ${T.promptLang} language. Return ONLY a valid raw JSON object — no markdown, no code fences.
+
+Schema:
+{
+  "plantCommonName": "name in ${T.promptLang}",
+  "plantScientificName": "scientific name",
+  "healthPercentage": <0-100>,
+  "overallStatus": "Healthy" or "Needs Attention" or "Critical",
+  "diagnosis": "2-3 sentences in ${T.promptLang}",
+  "issues": [{ "issue": "name", "severity": "Low|Medium|High", "description": "short text in ${T.promptLang}" }],
+  "nutrients": [{ "nutrient": "name", "status": "Deficient|Adequate|Excess", "recommendation": "text in ${T.promptLang}" }],
+  "watering": { "frequency": "text", "amount": "text", "bestTime": "text", "notes": "text in ${T.promptLang}" },
+  "careTips": ["tip1 in ${T.promptLang}", "tip2", "tip3", "tip4"]
+}`;
+
+    try {
+      const res = await fetch("/api/scan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: 'nvidia/nemotron-nano-12b-v2-vl:free',
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:${imageMimeType};base64,${imageBase64}`
+                }
+              },
+              {
+                type: 'text',
+                text: prompt
+              }
+            ]
+          }],
+          temperature: 0.3,
+          max_tokens: 1200
+        })
+      });
+
+      clearInterval(loadTimer);
+      loadingSection.style.display = 'none';
+      scanBtn.disabled = false;
+
+      if(!res.ok) {
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err.error?.message || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const raw  = data.choices?.[0]?.message?.content || '';
+      const clean = raw.replace(/```json|```/g,'').trim();
+      renderResults(JSON.parse(clean));
+
+    } catch(err) {
+      clearInterval(loadTimer);
+      loadingSection.style.display = 'none';
+      scanBtn.disabled = false;
+      let msg = err.message || 'Unknown error.';
+      if(msg.includes('401')) msg = 'Invalid API key. Check openrouter.ai/keys';
+      else if(msg.includes('429')) msg = 'Rate limit reached. Please wait and try again.';
+      showError(msg);
+    }
+  }
+
+  function showError(msg) {
+    errorMsg.innerHTML = `<strong>${T.scanFailed}</strong>${msg}`;
+    errorBox.style.display = 'flex';
+  }
+
+  // ── Render ────────────────────────────────────
+  const hColor = p => p>=70?'#1D9E75':p>=40?'#EF9F27':'#D85A30';
+  const sCls   = s => s==='Healthy'?'b-green':s==='Needs Attention'?'b-amber':'b-coral';
+  const svCls  = s => s==='Low'?'b-green':s==='Medium'?'b-amber':'b-coral';
+  const nCls   = s => s==='Adequate'?'b-green':s==='Deficient'?'b-amber':'b-coral';
+
+  function renderResults(r) {
+    const col = hColor(r.healthPercentage);
+    resultsSection.innerHTML = `
+      <div class="health-hero">
+        <div class="hh-top">
+          <div>
+            <div class="plant-name">${r.plantCommonName}</div>
+            <div class="plant-sci">${r.plantScientificName}</div>
+          </div>
+          <div class="score-wrap">
+            <div class="score-num" style="color:${col}">${r.healthPercentage}%</div>
+            <div class="score-lbl">${T.healthScore}</div>
+          </div>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" id="hFill" style="background:${col};"></div></div>
+        <div class="badge-row"><span class="badge ${sCls(r.overallStatus)}"><span class="dot"></span>${r.overallStatus}</span></div>
+      </div>
+
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${T.lblDiagnosis}</div>
+        <p class="diag-text">${r.diagnosis}</p>
+      </div>
+
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${T.lblIssues}</div>
+        ${r.issues?.length ? r.issues.map(i=>`
+          <div class="issue-item">
+            <div class="ihead"><span class="iname">${i.issue}</span><span class="badge ${svCls(i.severity)}"><span class="dot"></span>${i.severity}</span></div>
+            <p class="idesc">${i.description}</p>
+          </div>`).join('') : `<p style="font-size:14px;color:#888;">${T.noIssues}</p>`}
+      </div>
+
+      ${r.nutrients?.length ? `
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>${T.lblNutrients}</div>
+        ${r.nutrients.map(n=>`
+          <div class="nut-item">
+            <div class="ihead"><span class="iname">${n.nutrient}</span><span class="badge ${nCls(n.status)}"><span class="dot"></span>${n.status}</span></div>
+            <p class="idesc">${n.recommendation}</p>
+          </div>`).join('')}
+      </div>` : ''}
+
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>${T.lblWatering}</div>
+        <div class="water-grid">
+          <div class="wc"><div class="wc-lbl">${T.lblFreq}</div><div class="wc-val">${r.watering.frequency}</div></div>
+          <div class="wc"><div class="wc-lbl">${T.lblAmount}</div><div class="wc-val">${r.watering.amount}</div></div>
+          <div class="wc"><div class="wc-lbl">${T.lblBestTime}</div><div class="wc-val">${r.watering.bestTime}</div></div>
+          <div class="wnote">${r.watering.notes}</div>
+        </div>
+      </div>
+
+      ${r.careTips?.length ? `
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>${T.lblTips}</div>
+        <ul class="tip-list">${r.careTips.map((t,i)=>`<li class="tip-li"><span class="tip-n">${i+1}</span><span>${t}</span></li>`).join('')}</ul>
+      </div>` : ''}
+    `;
+    resultsSection.style.display = 'block';
+    rescanBtn.style.display = 'flex';
+    requestAnimationFrame(()=>setTimeout(()=>{ const b=document.getElementById('hFill'); if(b) b.style.width=r.healthPercentage+'%'; },80));
+    resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+</script>
+</body>
+</html>
