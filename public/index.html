@@ -23,7 +23,7 @@
       --amber:#EF9F27; --amber-light:#FFF4E0; --amber-dark:#854F0B;
       --coral:#D85A30; --coral-light:#FFF0EE; --coral-dark:#993C1D;
       --blue-light:#EFF7FF;
-      --bg:#F4F7F5; --surface:#FFFFFF; --surface2:#F0F4F2;
+      --bg:#6ea781; --surface:#6ea781; --surface2:#6ea781;
       --border:rgba(0,0,0,0.08); --border-md:rgba(0,0,0,0.14);
       --text:#111; --text2:#4A4A4A; --text3:#888;
       --r-sm:8px; --r-md:12px; --r-lg:18px;
@@ -150,37 +150,81 @@
     }
     .lang-btn.active { background:white; color:var(--green); box-shadow:0 1px 3px rgba(0,0,0,0.12); }
 
-    /* ── about card ── */
+    /* ── about card (GLASS + BACKGROUND IMAGE) ── */
     .about-card {
+      position: relative;
+      overflow: hidden;
+
       margin-top: 20px;
-      padding: 20px;
       margin-bottom: 10px;
-      align-items: center;
-
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(12px);
-
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-
       margin-left: auto;
       margin-right: auto;
+
+      padding: 20px;
+      border-radius: 18px;
+
+      /* glass base */
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+
+      border: 1px solid rgba(255, 255, 255, 0.18);
+
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+      color: #fff;
     }
 
+    /* background image layer */
+    .about-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      background: url("/about-bg.jpg") center/cover no-repeat;
+
+      transform: scale(1.1);
+      filter: brightness(0.65);
+
+      z-index: 0;
+    }
+
+    /* dark overlay for readability */
+    .about-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.2)
+      );
+
+      z-index: 0;
+    }
+
+    /* keep text above layers */
+    .about-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* text styles (updated for dark background) */
     .about-card h2 {
       font-family: 'DM Serif Display', Georgia, serif;
       font-style: italic;
       font-size: 1.6rem;
-      color: #316842;
+      color: #ffffff;
     }
 
     .about-card p {
       font-size: 1rem;
       line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
     }
 
+    /* tags */
     .about-tags {
       display: flex;
       gap: 10px;
@@ -188,14 +232,15 @@
     }
 
     .about-tags span {
-      background: rgba(34, 197, 94, 0.12);
-      color: #15803d;
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
 
       padding: 6px 10px;
       border-radius: 999px;
 
       font-size: 0.8rem;
       font-weight: 600;
+      backdrop-filter: blur(6px);
     }
 
     /* ── Card ── */
@@ -357,23 +402,33 @@
     .topbar-text h1 {
       font-size: 1.3rem;
     }
+    /* ── About card mobile fix ── */
     .about-card {
-    padding: 16px;
-    border-radius: 14px;
-    content: "center";
+      padding: 16px;
+      border-radius: 14px;
+
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .about-card h2 {
       font-size: 1.2rem;
+      line-height: 1.3;
     }
 
     .about-card p {
       font-size: 0.95rem;
+      line-height: 1.5;
     }
 
     .about-tags span {
       font-size: 0.75rem;
       padding: 5px 8px;
+    }
+
+    /* IMPORTANT: improve readability on small screens */
+    .about-card::after {
+      background: rgba(0, 0, 0, 0.55);
     }
   }
   </style>
