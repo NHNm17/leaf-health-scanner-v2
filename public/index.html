@@ -721,7 +721,7 @@
     rescanBtn.style.display      = 'none';
     loadingSection.style.display = 'block';
 
-    const msgs = [T.loadingMsg, 'Scanning...', 'Identifying species...', 'Checking for issues...', 'Generating care plan...'];
+    const msgs = [T.loadingMsg, 'Scanning... ', 'Identifying species...', 'Checking for issues...', 'Generating care plan...'];
     let mi = 0;
     loadingMsg.textContent = msgs[0];
     loadTimer = setInterval(() => { mi=(mi+1)%msgs.length; loadingMsg.textContent=msgs[mi]; }, 2000);
@@ -731,6 +731,7 @@ Respond ONLY in ${T.promptLang} language. Return ONLY a valid raw JSON object ‚Ä
 
 Schema:
 {
+  "isPlant": true | false,
   "plantCommonName": "name in ${T.promptLang}",
   "plantScientificName": "scientific name",
   "healthPercentage": <0-100>,
@@ -793,6 +794,12 @@ Schema:
 
         const jsonString = clean.substring(start, end + 1);
         result = JSON.parse(jsonString);
+
+        // ‚ùå NEW CHECK: Not a plant / leaf image
+        if (result.isPlant !== true) {
+        showError("Please capture or upload a clear plant / leaf image.");
+        return;
+      }
 
       } catch (e) {
         throw new Error("Failed to parse AI response");
