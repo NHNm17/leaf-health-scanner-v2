@@ -522,28 +522,13 @@
       lblFreq:'Frequency', lblAmount:'Amount', lblBestTime:'Best time',
       noIssues:'No significant issues detected.',
       camError:'Camera not available. Please allow camera access or use Upload instead.',
-
       aboutTitle: 'Diagnose your plant in seconds.',
       aboutDescription: 'Upload or photograph any plant or leaf. Our AI identifies the species, scores its health, spots issues, and tells you exactly how to fix them.',
       aboutTag1: 'Plant AI',
       aboutTag2: 'Machine Learning',
       aboutTag3: 'Image Analysis',
-
-      notPlant: 'The uploaded image does not contain a plant or leaf.',
-
-      statusHealthy:'Healthy',
-      statusAttention:'Needs Attention',
-      statusCritical:'Critical',
-      severityLow:'Low',
-      severityMedium:'Medium',
-      severityHigh:'High',
-      nutrientAdequate:'Adequate',
-      nutrientDeficient:'Deficient',
-      nutrientExcess:'Excess',
-
       promptLang:'English'
     },
-
     si: {
       appTitle:'කොළ සෞඛ්‍ය සොයනය', appSubtitle:'AI මගින් ශාක රෝග විනිශ්චය',
       lblUpload:'ඡායාරූප උඩුගත කරන්න', lblCamera:'කැමරාව භාවිතා කරන්න',
@@ -558,28 +543,13 @@
       lblFreq:'සංඛ්‍යාතය', lblAmount:'ප්‍රමාණය', lblBestTime:'හොඳම වේලාව',
       noIssues:'සැලකිය යුතු ගැටලු හඳුනාගෙන නොමැත.',
       camError:'කැමරාව ලබාගත නොහැකිය. කැමරා ප්‍රවේශය ලබාදෙන්න.',
-
       aboutTitle: 'තත්පර කිහිපයකින් ඔබේ ශාකය හඳුනාගන්න.',
       aboutDescription: 'ඕනෑම ශාකයක හෝ කොළයක ඡායාරූපයක් උඩුගත කරන්න හෝ ගන්න. අපගේ AI තාක්ෂණය ශාක වර්ගය හඳුනාගෙන, එහි සෞඛ්‍ය තත්ත්වය ඇගයීම කර, ගැටලු හඳුනාගෙන ඒවා නිවැරදි කිරීමට අවශ්‍ය උපදෙස් ලබා දෙයි.',
       aboutTag1: 'ශාක AI',
       aboutTag2: 'යන්ත්‍ර ඉගෙනීම',
       aboutTag3: 'රූප විශ්ලේෂණය',
-
-      notPlant: 'උඩුගත කළ රූපයේ ශාකයක් හෝ කොළයක් හඳුනාගත නොහැක.',
-
-      statusHealthy:'සෞඛ්‍ය සම්පන්න',
-      statusAttention:'අවධානය අවශ්‍යයි',
-      statusCritical:'බරපතලයි',
-      severityLow:'අඩු',
-      severityMedium:'මධ්‍යම',
-      severityHigh:'ඉහළ',
-      nutrientAdequate:'ප්‍රමාණවත්',
-      nutrientDeficient:'අඩු',
-      nutrientExcess:'අධික',
-
       promptLang:'Sinhala'
     },
-
     ta: {
       appTitle:'இலை ஆரோக்கிய ஸ்கேனர்', appSubtitle:'AI மூலம் தாவர நோய் கண்டறிதல்',
       lblUpload:'புகைப்படம் பதிவேற்று', lblCamera:'கேமரா பயன்படுத்து',
@@ -594,25 +564,11 @@
       lblFreq:'அதிர்வெண்', lblAmount:'அளவு', lblBestTime:'சிறந்த நேரம்',
       noIssues:'குறிப்பிடத்தக்க பிரச்சினைகள் எதுவும் இல்லை.',
       camError:'கேமரா கிடைக்கவில்லை. கேமரா அணுகலை அனுமதிக்கவும்.',
-
       aboutTitle: 'சில விநாடிகளில் உங்கள் தாவரத்தை கண்டறியுங்கள்.',
       aboutDescription: 'எந்த தாவரமோ அல்லது இலையோ அதன் புகைப்படத்தை பதிவேற்றவும் அல்லது எடுக்கவும். எங்கள் AI அதன் இனத்தை அடையாளம் கண்டு, ஆரோக்கிய மதிப்பீட்டை வழங்கி, பிரச்சினைகளை கண்டறிந்து அவற்றை சரிசெய்ய தேவையான வழிகாட்டுதல்களை வழங்குகிறது.',
       aboutTag1: 'தாவர AI',
       aboutTag2: 'இயந்திர கற்றல்',
       aboutTag3: 'பட பகுப்பாய்வு',
-
-      notPlant: 'பதிவேற்றப்பட்ட படத்தில் தாவரம் அல்லது இலை இல்லை.',
-
-      statusHealthy:'Healthy',
-      statusAttention:'Needs Attention',
-      statusCritical:'Critical',
-      severityLow:'Low',
-      severityMedium:'Medium',
-      severityHigh:'High',
-      nutrientAdequate:'Adequate',
-      nutrientDeficient:'Deficient',
-      nutrientExcess:'Excess',
-
       promptLang:'Tamil'
     }
   };
@@ -622,24 +578,15 @@
 
   function setLang(l) {
     lang = l; T = LANGS[l];
-    document.querySelectorAll('.lang-btn').forEach(b =>
-      b.classList.toggle('active', b.onclick.toString().includes(`'${l}'`))
-    );
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.onclick.toString().includes(`'${l}'`)));
     applyLang();
   }
 
   function applyLang() {
-    const ids = [
-      'appTitle','appSubtitle','lblUpload','lblCamera','uploadTitle','uploadSub',
-      'lblCapture','lblFlip','lblChange','lblScan','loadingMsg','loadingSub',
-      'lblRescan','footerNote',
-      'aboutTitle','aboutDescription','aboutTag1','aboutTag2','aboutTag3'
-    ];
-
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = T[id];
-    });
+    const ids = ['appTitle','appSubtitle','lblUpload','lblCamera','uploadTitle','uploadSub',
+                 'lblCapture','lblFlip','lblChange','lblScan','loadingMsg','loadingSub',
+                 'lblRescan','footerNote', 'aboutTitle','aboutDescription','aboutTag1','aboutTag2','aboutTag3'];
+    ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = T[id]; });
   }
 
   // ── State ─────────────────────────────────────
@@ -665,83 +612,142 @@
   const errorBox       = document.getElementById('errorBox');
   const errorMsg       = document.getElementById('errorMsg');
 
-  // ── Helpers ───────────────────────────────────
-  const translateStatus = (s) => {
-    if (s === 'Healthy') return T.statusHealthy;
-    if (s === 'Needs Attention') return T.statusAttention;
-    if (s === 'Critical') return T.statusCritical;
-    return s;
-  };
+  // ── Tabs ──────────────────────────────────────
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tabUpload').classList.toggle('active', tab==='upload');
+    document.getElementById('tabCamera').classList.toggle('active', tab==='camera');
+    uploadZone.style.display    = tab==='upload' ? 'block' : 'none';
+    cameraSection.style.display = tab==='camera' ? 'block' : 'none';
+    if (tab==='camera') startCamera();
+    else stopCamera();
+  }
 
-  const translateSeverity = (s) => {
-    if (s === 'Low') return T.severityLow;
-    if (s === 'Medium') return T.severityMedium;
-    if (s === 'High') return T.severityHigh;
-    return s;
-  };
+  // ── Camera ────────────────────────────────────
+  async function startCamera() {
+    camError.style.display = 'none';
+    try {
+      if (stream) stopCamera();
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode, width:{ideal:1280}, height:{ideal:720} }, audio: false
+      });
+      videoEl.srcObject = stream;
+    } catch(e) {
+      camError.textContent = T.camError;
+      camError.style.display = 'block';
+    }
+  }
 
-  const translateNutrient = (s) => {
-    if (s === 'Adequate') return T.nutrientAdequate;
-    if (s === 'Deficient') return T.nutrientDeficient;
-    if (s === 'Excess') return T.nutrientExcess;
-    return s;
-  };
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach(t=>t.stop()); stream = null; }
+    videoEl.srcObject = null;
+  }
+
+  function flipCamera() {
+    facingMode = facingMode==='environment' ? 'user' : 'environment';
+    startCamera();
+  }
+
+  function capturePhoto() {
+    if (!stream) return;
+    canvasEl.width  = videoEl.videoWidth  || 640;
+    canvasEl.height = videoEl.videoHeight || 480;
+    canvasEl.getContext('2d').drawImage(videoEl, 0, 0);
+    canvasEl.toBlob(blob => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        imageBase64   = ev.target.result.split(',')[1];
+        imageMimeType = 'image/jpeg';
+        previewImg.src = ev.target.result;
+        stopCamera();
+        cameraSection.style.display = 'none';
+        previewSection.style.display = 'block';
+        scanBtn.style.display = 'flex';
+        errorBox.style.display = 'none';
+        resultsSection.style.display = 'none';
+        rescanBtn.style.display = 'none';
+      };
+      reader.readAsDataURL(blob);
+    }, 'image/jpeg', 0.92);
+  }
+
+  // ── File upload ───────────────────────────────
+  fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault(); uploadZone.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')) handleFile(f);
+  });
+
+  function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      imageBase64   = ev.target.result.split(',')[1];
+      imageMimeType = file.type;
+      previewImg.src = ev.target.result;
+      uploadZone.style.display    = 'none';
+      previewSection.style.display = 'block';
+      scanBtn.style.display        = 'flex';
+      errorBox.style.display       = 'none';
+      resultsSection.style.display = 'none';
+      rescanBtn.style.display      = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetApp() {
+    stopCamera();
+    uploadZone.style.display     = currentTab==='upload' ? 'block' : 'none';
+    cameraSection.style.display  = currentTab==='camera' ? 'block' : 'none';
+    previewSection.style.display = 'none';
+    scanBtn.style.display        = 'none';
+    loadingSection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    rescanBtn.style.display      = 'none';
+    errorBox.style.display       = 'none';
+    imageBase64 = null; imageMimeType = null;
+    fileInput.value = '';
+    if(currentTab==='camera') startCamera();
+  }
 
   // ── Scan ──────────────────────────────────────
   async function runScan() {
     if (!imageBase64) return;
-
     scanBtn.disabled = true;
-    errorBox.style.display = 'none';
+    errorBox.style.display       = 'none';
     resultsSection.style.display = 'none';
-    rescanBtn.style.display = 'none';
+    rescanBtn.style.display      = 'none';
     loadingSection.style.display = 'block';
 
-    const msgs = [
-      T.loadingMsg,
-      'Scanning...',
-      'Identifying species...',
-      'Checking for issues...',
-      'Generating care plan...'
-    ];
-
+    const msgs = [T.loadingMsg, 'Scanning...', 'Identifying species...', 'Checking for issues...', 'Generating care plan...'];
     let mi = 0;
     loadingMsg.textContent = msgs[0];
-    loadTimer = setInterval(() => {
-      mi = (mi + 1) % msgs.length;
-      loadingMsg.textContent = msgs[mi];
-    }, 2000);
+    loadTimer = setInterval(() => { mi=(mi+1)%msgs.length; loadingMsg.textContent=msgs[mi]; }, 2000);
 
-    const prompt = `You are a professional botanist.
+    const prompt = `You are a professional botanist. Analyse the plant/leaf image carefully.
+Respond ONLY in ${T.promptLang} language. Return ONLY a valid raw JSON object — no markdown, no code fences.
 
-First determine whether the image contains a plant, leaf, flower, tree, crop, or any vegetation.
-
-If NO plant is visible, return ONLY:
-
+Schema:
 {
-  "isPlant": false,
-  "message": "${T.notPlant}"
-}
-
-If a plant is visible, return ONLY valid JSON:
-
-{
-  "isPlant": true,
   "plantCommonName": "name in ${T.promptLang}",
   "plantScientificName": "scientific name",
-  "healthPercentage": 0-100,
+  "healthPercentage": <0-100>,
   "overallStatus": "Healthy" or "Needs Attention" or "Critical",
-  "diagnosis": "text in ${T.promptLang}",
-  "issues": [{ "issue": "name", "severity": "Low|Medium|High", "description": "text in ${T.promptLang}" }],
+  "diagnosis": "2-3 sentences in ${T.promptLang}",
+  "issues": [{ "issue": "name", "severity": "Low|Medium|High", "description": "short text in ${T.promptLang}" }],
   "nutrients": [{ "nutrient": "name", "status": "Deficient|Adequate|Excess", "recommendation": "text in ${T.promptLang}" }],
   "watering": { "frequency": "text", "amount": "text", "bestTime": "text", "notes": "text in ${T.promptLang}" },
-  "careTips": ["text in ${T.promptLang}", "text", "text", "text"]
+  "careTips": ["tip1 in ${T.promptLang}", "tip2", "tip3", "tip4"]
 }`;
 
     try {
       const res = await fetch("/api/scan", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           model: 'nvidia/nemotron-nano-12b-v2-vl:free',
           messages: [{
@@ -753,7 +759,10 @@ If a plant is visible, return ONLY valid JSON:
                   url: `data:${imageMimeType};base64,${imageBase64}`
                 }
               },
-              { type: 'text', text: prompt }
+              {
+                type: 'text',
+                text: prompt
+              }
             ]
           }],
           temperature: 0.3,
@@ -765,41 +774,39 @@ If a plant is visible, return ONLY valid JSON:
       loadingSection.style.display = 'none';
       scanBtn.disabled = false;
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
+      if(!res.ok) {
+        const err = await res.json().catch(()=>({}));
         throw new Error(err.error?.message || `HTTP ${res.status}`);
       }
-
       const data = await res.json();
-      const raw = data.choices?.[0]?.message?.content || '';
-      const clean = raw.replace(/```json|```/g, '').trim();
+      const raw  = data.choices?.[0]?.message?.content || '';
+      const clean = raw.replace(/```json|```/g,'').trim();
+      let result;
 
-      const start = clean.indexOf("{");
-      const end = clean.lastIndexOf("}");
+      try {
+        const start = clean.indexOf("{");
+        const end = clean.lastIndexOf("}");
 
-      if (start === -1 || end === -1) {
-        throw new Error("Invalid JSON response");
-      }
+        if (start === -1 || end === -1) {
+          throw new Error("Invalid JSON response");
+        }
 
-      const jsonString = clean.substring(start, end + 1);
-      const result = JSON.parse(jsonString);
+        const jsonString = clean.substring(start, end + 1);
+        result = JSON.parse(jsonString);
 
-      if (result.isPlant === false) {
-        showError(result.message);
-        return;
+      } catch (e) {
+        throw new Error("Failed to parse AI response");
       }
 
       renderResults(result);
 
-    } catch (err) {
+    } catch(err) {
       clearInterval(loadTimer);
       loadingSection.style.display = 'none';
       scanBtn.disabled = false;
-
       let msg = err.message || 'Unknown error.';
-      if (msg.includes('401')) msg = 'Invalid API key. Check openrouter.ai/keys';
-      else if (msg.includes('429')) msg = 'Rate limit reached. Please wait and try again.';
-
+      if(msg.includes('401')) msg = 'Invalid API key. Check openrouter.ai/keys';
+      else if(msg.includes('429')) msg = 'Rate limit reached. Please wait and try again.';
       showError(msg);
     }
   }
@@ -810,14 +817,13 @@ If a plant is visible, return ONLY valid JSON:
   }
 
   // ── Render ────────────────────────────────────
-  const hColor = p => p >= 70 ? '#1D9E75' : p >= 40 ? '#EF9F27' : '#D85A30';
-  const sCls = s => s === 'Healthy' ? 'b-green' : s === 'Needs Attention' ? 'b-amber' : 'b-coral';
-  const svCls = s => s === 'Low' ? 'b-green' : s === 'Medium' ? 'b-amber' : 'b-coral';
-  const nCls = s => s === 'Adequate' ? 'b-green' : s === 'Deficient' ? 'b-amber' : 'b-coral';
+  const hColor = p => p>=70?'#1D9E75':p>=40?'#EF9F27':'#D85A30';
+  const sCls   = s => s==='Healthy'?'b-green':s==='Needs Attention'?'b-amber':'b-coral';
+  const svCls  = s => s==='Low'?'b-green':s==='Medium'?'b-amber':'b-coral';
+  const nCls   = s => s==='Adequate'?'b-green':s==='Deficient'?'b-amber':'b-coral';
 
   function renderResults(r) {
     const col = hColor(r.healthPercentage);
-
     resultsSection.innerHTML = `
       <div class="health-hero">
         <div class="hh-top">
@@ -825,68 +831,41 @@ If a plant is visible, return ONLY valid JSON:
             <div class="plant-name">${r.plantCommonName}</div>
             <div class="plant-sci">${r.plantScientificName}</div>
           </div>
-
           <div class="score-wrap">
             <div class="score-num" style="color:${col}">${r.healthPercentage}%</div>
             <div class="score-lbl">${T.healthScore}</div>
           </div>
         </div>
-
-        <div class="bar-bg">
-          <div class="bar-fill" id="hFill" style="background:${col};"></div>
-        </div>
-
-        <div class="badge-row">
-          <span class="badge ${sCls(r.overallStatus)}">
-            <span class="dot"></span>${translateStatus(r.overallStatus)}
-          </span>
-        </div>
+        <div class="bar-bg"><div class="bar-fill" id="hFill" style="background:${col};"></div></div>
+        <div class="badge-row"><span class="badge ${sCls(r.overallStatus)}"><span class="dot"></span>${r.overallStatus}</span></div>
       </div>
 
       <div class="rs">
-        <div class="rs-title">${T.lblDiagnosis}</div>
+        <div class="rs-title"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${T.lblDiagnosis}</div>
         <p class="diag-text">${r.diagnosis}</p>
       </div>
 
       <div class="rs">
-        <div class="rs-title">${T.lblIssues}</div>
-        ${
-          r.issues?.length
-            ? r.issues.map(i => `
-                <div class="issue-item">
-                  <div class="ihead">
-                    <span class="iname">${i.issue}</span>
-                    <span class="badge ${svCls(i.severity)}">
-                      <span class="dot"></span>${translateSeverity(i.severity)}
-                    </span>
-                  </div>
-                  <p class="idesc">${i.description}</p>
-                </div>
-              `).join('')
-            : `<p style="font-size:14px;color:#888;">${T.noIssues}</p>`
-        }
+        <div class="rs-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${T.lblIssues}</div>
+        ${r.issues?.length ? r.issues.map(i=>`
+          <div class="issue-item">
+            <div class="ihead"><span class="iname">${i.issue}</span><span class="badge ${svCls(i.severity)}"><span class="dot"></span>${i.severity}</span></div>
+            <p class="idesc">${i.description}</p>
+          </div>`).join('') : `<p style="font-size:14px;color:#888;">${T.noIssues}</p>`}
       </div>
 
-      ${
-        r.nutrients?.length ? `
-        <div class="rs">
-          <div class="rs-title">${T.lblNutrients}</div>
-          ${r.nutrients.map(n => `
-            <div class="nut-item">
-              <div class="ihead">
-                <span class="iname">${n.nutrient}</span>
-                <span class="badge ${nCls(n.status)}">
-                  <span class="dot"></span>${translateNutrient(n.status)}
-                </span>
-              </div>
-              <p class="idesc">${n.recommendation}</p>
-            </div>
-          `).join('')}
-        </div>` : ''
-      }
+      ${r.nutrients?.length ? `
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>${T.lblNutrients}</div>
+        ${r.nutrients.map(n=>`
+          <div class="nut-item">
+            <div class="ihead"><span class="iname">${n.nutrient}</span><span class="badge ${nCls(n.status)}"><span class="dot"></span>${n.status}</span></div>
+            <p class="idesc">${n.recommendation}</p>
+          </div>`).join('')}
+      </div>` : ''}
 
       <div class="rs">
-        <div class="rs-title">${T.lblWatering}</div>
+        <div class="rs-title"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>${T.lblWatering}</div>
         <div class="water-grid">
           <div class="wc"><div class="wc-lbl">${T.lblFreq}</div><div class="wc-val">${r.watering.frequency}</div></div>
           <div class="wc"><div class="wc-lbl">${T.lblAmount}</div><div class="wc-val">${r.watering.amount}</div></div>
@@ -895,35 +874,17 @@ If a plant is visible, return ONLY valid JSON:
         </div>
       </div>
 
-      ${
-        r.careTips?.length ? `
-        <div class="rs">
-          <div class="rs-title">${T.lblTips}</div>
-          <ul class="tip-list">
-            ${r.careTips.map((t,i)=>`
-              <li class="tip-li">
-                <span class="tip-n">${i+1}</span>
-                <span>${t}</span>
-              </li>
-            `).join('')}
-          </ul>
-        </div>` : ''
-      }
+      ${r.careTips?.length ? `
+      <div class="rs">
+        <div class="rs-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>${T.lblTips}</div>
+        <ul class="tip-list">${r.careTips.map((t,i)=>`<li class="tip-li"><span class="tip-n">${i+1}</span><span>${t}</span></li>`).join('')}</ul>
+      </div>` : ''}
     `;
-
     resultsSection.style.display = 'block';
     rescanBtn.style.display = 'flex';
-
-    requestAnimationFrame(() =>
-      setTimeout(() => {
-        const b = document.getElementById('hFill');
-        if (b) b.style.width = r.healthPercentage + '%';
-      }, 80)
-    );
-
-    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    requestAnimationFrame(()=>setTimeout(()=>{ const b=document.getElementById('hFill'); if(b) b.style.width=r.healthPercentage+'%'; },80));
+    resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
   }
-
 </script>
 </body>
 </html>
