@@ -172,7 +172,7 @@
     .about-card h2 {
       font-family: 'DM Serif Display', Georgia, serif;
       font-style: italic;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       color: #316842;
     }
 
@@ -403,15 +403,15 @@
 </div>
 
 <div class="about-card">
-  <h2>Diagnose your plant in seconds.</h2>
-  <p>
+  <h2 id="aboutTitle">Diagnose your plant in seconds.</h2>
+  <p id="aboutDescription">
    Upload or photograph any plant or leaf. Our AI identifies the species, scores its health, spots issues and tells you exactly how to fix them.
   </p>
 
   <div class="about-tags">
-    <span>Plant AI</span>
-    <span>Machine Learning</span>
-    <span>Image Analysis</span>
+    <span id="aboutTag1">Plant AI</span>
+    <span id="aboutTag2">Machine Learning</span>
+    <span id="aboutTag3">Image Analysis</span>
   </div>
 </div>
 
@@ -522,6 +522,11 @@
       lblFreq:'Frequency', lblAmount:'Amount', lblBestTime:'Best time',
       noIssues:'No significant issues detected.',
       camError:'Camera not available. Please allow camera access or use Upload instead.',
+      aboutTitle: 'Diagnose your plant in seconds.',
+      aboutDescription: 'Upload or photograph any plant or leaf. Our AI identifies the species, scores its health, spots issues, and tells you exactly how to fix them.',
+      aboutTag1: 'Plant AI',
+      aboutTag2: 'Machine Learning',
+      aboutTag3: 'Image Analysis',
       promptLang:'English'
     },
     si: {
@@ -538,6 +543,11 @@
       lblFreq:'සංඛ්‍යාතය', lblAmount:'ප්‍රමාණය', lblBestTime:'හොඳම වේලාව',
       noIssues:'සැලකිය යුතු ගැටලු හඳුනාගෙන නොමැත.',
       camError:'කැමරාව ලබාගත නොහැකිය. කැමරා ප්‍රවේශය ලබාදෙන්න.',
+      aboutTitle: 'තත්පර කිහිපයකින් ඔබේ ශාකය හඳුනාගන්න.',
+      aboutDescription: 'ඕනෑම ශාකයක හෝ කොළයක ඡායාරූපයක් උඩුගත කරන්න හෝ ගන්න. අපගේ AI තාක්ෂණය ශාක වර්ගය හඳුනාගෙන, එහි සෞඛ්‍ය තත්ත්වය ඇගයීම කර, ගැටලු හඳුනාගෙන ඒවා නිවැරදි කිරීමට අවශ්‍ය උපදෙස් ලබා දෙයි.',
+      aboutTag1: 'ශාක AI',
+      aboutTag2: 'යන්ත්‍ර ඉගෙනීම',
+      aboutTag3: 'රූප විශ්ලේෂණය',
       promptLang:'Sinhala'
     },
     ta: {
@@ -554,6 +564,11 @@
       lblFreq:'அதிர்வெண்', lblAmount:'அளவு', lblBestTime:'சிறந்த நேரம்',
       noIssues:'குறிப்பிடத்தக்க பிரச்சினைகள் எதுவும் இல்லை.',
       camError:'கேமரா கிடைக்கவில்லை. கேமரா அணுகலை அனுமதிக்கவும்.',
+      aboutTitle: 'சில விநாடிகளில் உங்கள் தாவரத்தை கண்டறியுங்கள்.',
+      aboutDescription: 'எந்த தாவரமோ அல்லது இலையோ அதன் புகைப்படத்தை பதிவேற்றவும் அல்லது எடுக்கவும். எங்கள் AI அதன் இனத்தை அடையாளம் கண்டு, ஆரோக்கிய மதிப்பீட்டை வழங்கி, பிரச்சினைகளை கண்டறிந்து அவற்றை சரிசெய்ய தேவையான வழிகாட்டுதல்களை வழங்குகிறது.',
+      aboutTag1: 'தாவர AI',
+      aboutTag2: 'இயந்திர கற்றல்',
+      aboutTag3: 'பட பகுப்பாய்வு',
       promptLang:'Tamil'
     }
   };
@@ -570,7 +585,7 @@
   function applyLang() {
     const ids = ['appTitle','appSubtitle','lblUpload','lblCamera','uploadTitle','uploadSub',
                  'lblCapture','lblFlip','lblChange','lblScan','loadingMsg','loadingSub',
-                 'lblRescan','footerNote'];
+                 'lblRescan','footerNote', 'aboutTitle','aboutDescription','aboutTag1','aboutTag2','aboutTag3'];
     ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = T[id]; });
   }
 
